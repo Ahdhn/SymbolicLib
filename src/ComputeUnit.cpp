@@ -83,8 +83,8 @@ void ComputeUnit<RealT>::compile(const string& code)
     file << code;
     file.close();
 
-#ifdef _MSC_VER
-    string cmd = "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Professional\\VC\\Auxiliary\\Build\\vcvars64.bat\"";
+#ifdef _MSC_VER    
+    string cmd = "\"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\Build\\vcvars64.bat\"";
 
     if (device.cudaDevice)
     {

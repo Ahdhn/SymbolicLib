@@ -37,9 +37,8 @@ void buildMass(Eigen::Matrix<TNum, -1, -1>& V, Eigen::MatrixXi& F, Eigen::Sparse
 }
 
 template <class TNum>
-std::array<long, 2> buildCotan(Eigen::Matrix<TNum, -1, -1>& V, Eigen::MatrixXi& F, Eigen::SparseMatrix<TNum>& L, Eigen::SparseMatrix<TNum>& M)
-{
-    std::array<long, 2> ret;
+void buildCotan(Eigen::Matrix<TNum, -1, -1>& V, Eigen::MatrixXi& F, Eigen::SparseMatrix<TNum>& L, Eigen::SparseMatrix<TNum>& M)
+{    
 
     std::vector<Eigen::Triplet<TNum>> triplets;
     triplets.reserve(F.rows() * 12);
@@ -71,8 +70,7 @@ std::array<long, 2> buildCotan(Eigen::Matrix<TNum, -1, -1>& V, Eigen::MatrixXi& 
 
     L.resize(V.rows(), V.rows());
     L.setFromTriplets(triplets.begin(), triplets.end());
-
-    return ret;
+ 
 }
 
 int main(int argc, char* argv[])
@@ -80,8 +78,7 @@ int main(int argc, char* argv[])
 
     using namespace Sym;
 
-    std::string meshFile = filePath() + "/d5k.off";
-    ;
+    std::string meshFile = filePath() + "/edgar-allan-poe-1.off";    
 
     Eigen::MatrixXi F;
     Eigen::MatrixXd V;
@@ -104,7 +101,7 @@ int main(int argc, char* argv[])
     buildCotan(Vs, F, Ls, Ls);
     t.printTime("build cotan");
 
-    Sym::ComputeUnit<double> unit(Device(VecWidth(4), NumThreads(8)), Vs, Ls);
+    Sym::ComputeUnit<double> unit(Device(UseCuda(), ThreadsPerBlock(256)), Vs, Ls);
     t.printTime("build");
 
     unit.compile();
